@@ -1,0 +1,27 @@
+# Dependency directories
+node_modules/
+
+# TypeScript build output
+dist/
+*.tsbuildinfo
+
+# Coverage reports
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE and editor files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Optional eslint cache
+.eslintcache 

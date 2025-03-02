@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",            // Modern Node.js supports recent ECMAScript features
+    "module": "NodeNext",          // Use the Node.js-specific module resolution
+    "moduleResolution": "NodeNext", // Modern module resolution strategy
+    "esModuleInterop": true,       // Enables compatibility with CommonJS modules
+    "strict": true,                // Enable all strict type checking options
+    "skipLibCheck": true,          // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Ensure consistent casing in imports
+    "outDir": "./dist",            // Output directory for compiled files
+    "rootDir": ".",                // Root directory for source files
+    "sourceMap": true,             // Generate source maps for debugging
+    "declaration": true,           // Generate .d.ts files
+    "removeComments": false,       // Keep comments in output
+    "noImplicitAny": true,         // Raise error on expressions and declarations with implied 'any' type
+    "strictNullChecks": true,      // Enable strict null checks
+    "strictFunctionTypes": true,   // Enable strict checking of function types
+    "noImplicitThis": true,        // Raise error on 'this' expressions with an implied 'any' type
+    "noUnusedLocals": true,        // Report errors on unused locals
+    "noUnusedParameters": true,    // Report errors on unused parameters
+    "noImplicitReturns": true,     // Report error when not all code paths in function return a value
+    "noFallthroughCasesInSwitch": true, // Report errors for fallthrough cases in switch statements
+    "resolveJsonModule": true,     // Allow importing JSON files
+    "verbatimModuleSyntax": false, // Disable verbatimModuleSyntax for easier ESM/CommonJS compatibility
+    "baseUrl": ".",                // Base directory to resolve non-relative module names
+    "allowJs": true
+  },
+  "include": [
+    "**/*.ts"                      // Include all TypeScript files in the project
+  ],
+  "exclude": [
+    "node_modules",                // Exclude node_modules directory
+    "dist"                         // Exclude output directory
+  ]
+} 
