@@ -1,15 +1,36 @@
 #!/usr/bin/env node
-
 import Stream from 'node:stream';
 
-export const handleInput = async (
-  input: Stream.Readable,
-  output: Stream.Writable
-): Promise<void> => {
-  const instructions = await input.reduce((acc, instruction) => {
-    return acc + instruction;
-  }, '');
+export type InstructionTerm = 'PLACE' | 'MOVE' | 'LEFT' | 'RIGHT' | 'REPORT';
 
+export type Direction = 'NORTH' | 'EAST' | 'SOUTH' | 'WEST';
+
+export type RobotState = {
+  x: number;
+  y: number;
+  facing: Direction;
+};
+
+export type Instruction =
+  | { type: 'PLACE'; x: number; y: number; facing: Direction }
+  | { type: 'MOVE' }
+  | { type: 'LEFT' }
+  | { type: 'RIGHT' }
+  | { type: 'REPORT' };
+
+export type CommandParser = (line: string, canvas: Canvas) => Instruction[];
+export type InputHandler = (input: Stream.Readable, output: Stream.Writable) => Promise<void>;
+
+export type Canvas = {
+  w: number;
+  h: number;
+};
+
+export const handleInput: InputHandler = async (
+  input: Stream.Readable,
+  output: Stream.Writable,
+  canvas = { w: 5, h: 5 }
+): Promise<void> => {
   output.write(instructions);
   output.end();
 };

@@ -22,24 +22,31 @@
 ### Architecture
 ```mermaid
 graph TD
-    A[main.ts] --> B[commandParser]
-    A --> C[robot]
-    A --> D[standardOutput]
+    A[main] --> |input and output streams| B[handleInput]
+    B --> |string input| C[CommandParser]
+    C --> |parsed instructions| B
+    B --> |current state and instruction| D[RobotReducer]
+    D --> |new state| B
+    B --> |writes when needed| E[output]
     
-    subgraph Entry Point
-        A
+    subgraph Entry Function
+        A[main]
     end
     
-    subgraph Parser Module
-        B[commandParser]
+    subgraph Core Processing
+        B[handleInput]
     end
     
-    subgraph Robot Module
-        C[robot]
+    subgraph Parser Function
+        C[CommandParser]
     end
     
-    subgraph Output Module
-        D[standardOutput]
+    subgraph State Management
+        D[RobotReducer]
+    end
+    
+    subgraph Output Function
+        E[output.write]
     end
 ```
 - It should be easy to add more commands.
