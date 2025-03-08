@@ -52,3 +52,33 @@ graph TD
 - It should be easy to add more commands.
 - It should be easy to change the robot implementation.
 - It should be easy to change the output.
+
+### State Diagram
+```mermaid
+stateDiagram-v2
+    [*] --> NotPositioned
+    
+    NotPositioned --> NotPositioned: MOVE/LEFT/RIGHT/REPORT (ignored)
+    NotPositioned --> Positioned: PLACE X,Y,F (valid coordinates)
+    
+    Positioned --> Positioned: PLACE X,Y,F (update position/facing)
+    Positioned --> Positioned: MOVE (if valid position)
+    Positioned --> Positioned: INVALID MOVE (ignored)
+    Positioned --> Positioned: REPORT (output position)
+    
+    state Positioned {
+        [*] --> FacingNorth
+        
+        FacingNorth --> FacingWest: LEFT
+        FacingNorth --> FacingEast: RIGHT
+        
+        FacingEast --> FacingNorth: LEFT
+        FacingEast --> FacingSouth: RIGHT
+        
+        FacingSouth --> FacingEast: LEFT
+        FacingSouth --> FacingWest: RIGHT
+        
+        FacingWest --> FacingSouth: LEFT
+        FacingWest --> FacingNorth: RIGHT
+    }
+```
