@@ -1,47 +1,61 @@
-import { Canvas, CommandParser, Direction, Instruction, InstructionTerm } from 'src/main.js';
+import {
+  Canvas,
+  CommandParser,
+  Direction,
+  Instruction,
+  PlaceInstruction,
+  SimpleInstruction,
+} from 'src/main.js';
 
-const isDirection = (direction: string): direction is Direction => {
-  return (
-    direction === 'NORTH' || direction === 'EAST' || direction === 'SOUTH' || direction === 'WEST'
-  );
+const COMMAND_REGEX =
+  /(?<term>MOVE|LEFT|RIGHT|REPORT|PLACE)\s*((?<x>\d),\s*(?<y>\d),\s*(?<facing>NORTH|SOUTH|EAST|WEST)\b)?/i;
+
+export const parseInstruction = (instruction: string): Instruction | null => {
+  const result = COMMAND_REGEX.exec(instruction);
+
+  if (!result?.groups) {
+    return null;
+  }
+
+  const { term, x, y, facing } = result.groups;
+
+  if (!term) {
+    return null;
+  }
+
+  if (term === 'PLACE') {
+    if (typeof x !== 'string' || typeof y !== 'string' || typeof facing !== 'string') {
+      return null;
+    }
+
+    const xInt = parseInt(x);
+    const yInt = parseInt(y);
+
+    if (isNaN(xInt) || isNaN(yInt)) {
+      return null;
+    }
+
+    // Allowing the type assertions here because the regex should have already validated
+    // things somewhat.
+    return { type: 'PLACE', x: xInt, y: yInt, facing: facing as Direction };
+  } else {
+    return { type: term } as SimpleInstruction;
+  }
 };
 
-const isValidTerm = (instruction: string): instruction is InstructionTerm => {
-  return (
-    instruction === 'PLACE' ||
-    instruction === 'MOVE' ||
-    instruction === 'LEFT' ||
-    instruction === 'RIGHT' ||
-    instruction === 'REPORT'
-  );
+const isPlaceCommand = (instruction: Instruction): instruction is PlaceInstruction => {
+  return instruction.type === 'PLACE';
 };
 
-// Consume a string and return a Place instruction if it is valid
-const parsePlace = (
-  instruction: string,
-  canvas: Canvas
-): { type: 'PLACE'; x: number; y: number; facing: Direction } | null => {
-  const [term, x, y, facing] = instruction.split(' ');
+// Check that a place command falls within the canvas
+const placeCommandIsValid = (instruction: PlaceInstruction, canvas: Canvas): boolean => {
+  const { x, y } = instruction;
 
-  // Make sure all needed arguments are present
-  if (term !== 'PLACE' || !x || !y || !facing) {
-    return null;
+  if (x < 0 || x > canvas.w || y < 0 || y > canvas.h) {
+    return false;
   }
 
-  const xInt = parseInt(x);
-  const yInt = parseInt(y);
-
-  // Check if the x and y are numbers
-  if (isNaN(xInt) || isNaN(yInt)) {
-    return null;
-  }
-
-  // Check if the place is within the canvas and the direction is valid
-  if (xInt < 0 || xInt > canvas.w || yInt < 0 || yInt > canvas.h || !isDirection(facing)) {
-    return null;
-  }
-
-  return { type: 'PLACE', x: xInt, y: yInt, facing };
+  return true;
 };
 
 // Parse a chunk of text into a list of instructions
@@ -53,10 +67,12 @@ export const commandParser: CommandParser = (
   const instructions = line.trim().toUpperCase().split(delimiter);
 
   const parsedInstructions = instructions.map((instruction: string) => {
-    if (isValidTerm(instruction)) {
-      return parsePlace(instruction, canvas) ?? { type: instruction };
+    const parsedInstruction = parseInstruction(instruction);
+
+    if (parsedInstruction && isPlaceCommand(parsedInstruction)) {
+      return placeCommandIsValid(parsedInstruction, canvas) ? parsedInstruction : null;
     } else {
-      return null;
+      return parsedInstruction;
     }
   });
 

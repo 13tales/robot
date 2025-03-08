@@ -11,12 +11,14 @@ export type RobotState = {
   facing: Direction;
 };
 
-export type Instruction =
-  | { type: 'PLACE'; x: number; y: number; facing: Direction }
+export type PlaceInstruction = { type: 'PLACE'; x: number; y: number; facing: Direction };
+export type SimpleInstruction =
   | { type: 'MOVE' }
   | { type: 'LEFT' }
   | { type: 'RIGHT' }
   | { type: 'REPORT' };
+
+export type Instruction = PlaceInstruction | SimpleInstruction;
 
 export type CommandParser = (line: string, canvas: Canvas) => Instruction[];
 export type InputHandler = (input: Stream.Readable, output: Stream.Writable) => Promise<void>;

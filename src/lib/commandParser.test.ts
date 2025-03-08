@@ -1,5 +1,5 @@
 import { Canvas, Instruction } from '../../src/main.js';
-import { commandParser } from './commandParser.js';
+import { commandParser, parseInstruction } from './commandParser.js';
 
 describe('commandParser', () => {
   // Default canvas for testing
@@ -174,10 +174,10 @@ describe('commandParser', () => {
 
     it('should correctly validate PLACE with larger canvas', () => {
       const largeCanvas: Canvas = { w: 10, h: 10 };
-      const input = 'PLACE 6,8,EAST\nPLACE 10,10,WEST';
+      const input = 'PLACE 6,8,EAST\nPLACE 9,9,WEST';
       const expected: Instruction[] = [
         { type: 'PLACE', x: 6, y: 8, facing: 'EAST' },
-        { type: 'PLACE', x: 10, y: 10, facing: 'WEST' },
+        { type: 'PLACE', x: 9, y: 9, facing: 'WEST' },
       ];
 
       const result = commandParser(input, largeCanvas);
@@ -196,6 +196,88 @@ describe('commandParser', () => {
       const result = commandParser(input, rectangularCanvas);
 
       expect(result).toEqual(expected);
+    });
+  });
+});
+
+describe('parseInstruction', () => {
+  describe('Valid commands', () => {
+    it('should parse valid basic commands as specified in spec.md', () => {
+      expect(parseInstruction('PLACE 0,0,NORTH')).toEqual({
+        type: 'PLACE',
+        x: 0,
+        y: 0,
+        facing: 'NORTH',
+      });
+      expect(parseInstruction('MOVE')).toEqual({ type: 'MOVE' });
+      expect(parseInstruction('LEFT')).toEqual({ type: 'LEFT' });
+      expect(parseInstruction('RIGHT')).toEqual({ type: 'RIGHT' });
+      expect(parseInstruction('REPORT')).toEqual({ type: 'REPORT' });
+    });
+
+    it('should parse valid commands with unexpected whitespace', () => {
+      expect(parseInstruction('  PLACE 0,0,NORTH')).toEqual({
+        type: 'PLACE',
+        x: 0,
+        y: 0,
+        facing: 'NORTH',
+      });
+      expect(parseInstruction('PLACE  0,0,NORTH')).toEqual({
+        type: 'PLACE',
+        x: 0,
+        y: 0,
+        facing: 'NORTH',
+      });
+      expect(parseInstruction('PLACE 0, 0, NORTH')).toEqual({
+        type: 'PLACE',
+        x: 0,
+        y: 0,
+        facing: 'NORTH',
+      });
+      expect(parseInstruction('PLACE 0,0,NORTH  ')).toEqual({
+        type: 'PLACE',
+        x: 0,
+        y: 0,
+        facing: 'NORTH',
+      });
+      expect(parseInstruction('  MOVE  ')).toEqual({ type: 'MOVE' });
+      expect(parseInstruction('  LEFT  ')).toEqual({ type: 'LEFT' });
+      expect(parseInstruction('  RIGHT  ')).toEqual({ type: 'RIGHT' });
+      expect(parseInstruction('  REPORT  ')).toEqual({ type: 'REPORT' });
+    });
+  });
+
+  describe('Invalid commands', () => {
+    it('should return null for invalid commands', () => {
+      expect(parseInstruction('JUMP')).toBeNull();
+      expect(parseInstruction('RUN')).toBeNull();
+      expect(parseInstruction('WALK')).toBeNull();
+      expect(parseInstruction('STOP')).toBeNull();
+      expect(parseInstruction('')).toBeNull();
+    });
+
+    it('should return null for PLACE command with missing parameters', () => {
+      expect(parseInstruction('PLACE')).toBeNull();
+      expect(parseInstruction('PLACE 0')).toBeNull();
+      expect(parseInstruction('PLACE 0,0')).toBeNull();
+      expect(parseInstruction('PLACE ,,NORTH')).toBeNull();
+      expect(parseInstruction('PLACE 0,,NORTH')).toBeNull();
+      expect(parseInstruction('PLACE ,0,NORTH')).toBeNull();
+    });
+
+    it('should return null when PLACE command parameters are in wrong order', () => {
+      expect(parseInstruction('PLACE NORTH,0,0')).toBeNull();
+      expect(parseInstruction('PLACE 0,NORTH,0')).toBeNull();
+      expect(parseInstruction('PLACE 0,0,0')).toBeNull(); // Facing should be a direction
+    });
+
+    it('should return null when PLACE command parameters are incorrect', () => {
+      expect(parseInstruction('PLACE x,y,NORTH')).toBeNull();
+      expect(parseInstruction('PLACE 0,0,NORTHWEST')).toBeNull();
+      expect(parseInstruction('PLACE -1,0,NORTH')).toBeNull();
+      expect(parseInstruction('PLACE 0,-1,NORTH')).toBeNull();
+      expect(parseInstruction('PLACE 0.5,0,NORTH')).toBeNull();
+      expect(parseInstruction('PLACE 0,0.5,NORTH')).toBeNull();
     });
   });
 });
