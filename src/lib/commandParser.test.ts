@@ -16,8 +16,8 @@ describe('commandParser', () => {
     });
 
     it('should parse valid PLACE instructions with parameters at canvas bounds', () => {
-      const input = 'PLACE 5,5,EAST';
-      const expected: Instruction[] = [{ type: 'PLACE', x: 5, y: 5, facing: 'EAST' }];
+      const input = 'PLACE 4,4,EAST';
+      const expected: Instruction[] = [{ type: 'PLACE', x: 4, y: 4, facing: 'EAST' }];
 
       const result = commandParser(input, defaultCanvas);
 
@@ -164,8 +164,8 @@ describe('commandParser', () => {
   describe('Different canvas sizes', () => {
     it('should correctly validate PLACE with smaller canvas', () => {
       const smallCanvas: Canvas = { w: 3, h: 3 };
-      const input = 'PLACE 3,3,NORTH\nPLACE 4,2,SOUTH';
-      const expected: Instruction[] = [{ type: 'PLACE', x: 3, y: 3, facing: 'NORTH' }];
+      const input = 'PLACE 2,2,NORTH\nPLACE 3,2,SOUTH';
+      const expected: Instruction[] = [{ type: 'PLACE', x: 2, y: 2, facing: 'NORTH' }];
 
       const result = commandParser(input, smallCanvas);
 
@@ -187,10 +187,10 @@ describe('commandParser', () => {
 
     it('should correctly validate PLACE with non-square canvas', () => {
       const rectangularCanvas: Canvas = { w: 8, h: 4 };
-      const input = 'PLACE 7,3,NORTH\nPLACE 5,4,SOUTH\nPLACE 8,5,WEST';
+      const input = 'PLACE 7,3,NORTH\nPLACE 5,3,SOUTH\nPLACE 8,5,WEST';
       const expected: Instruction[] = [
         { type: 'PLACE', x: 7, y: 3, facing: 'NORTH' },
-        { type: 'PLACE', x: 5, y: 4, facing: 'SOUTH' },
+        { type: 'PLACE', x: 5, y: 3, facing: 'SOUTH' },
       ];
 
       const result = commandParser(input, rectangularCanvas);

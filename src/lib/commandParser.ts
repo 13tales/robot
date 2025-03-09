@@ -48,10 +48,8 @@ const isPlaceCommand = (instruction: Instruction): instruction is PlaceInstructi
 };
 
 // Check that a place command falls within the canvas
-const placeCommandIsValid = (instruction: PlaceInstruction, canvas: Canvas): boolean => {
-  const { x, y } = instruction;
-
-  if (x < 0 || x > canvas.w || y < 0 || y > canvas.h) {
+export const newPositionIsValid = (position: { x: number; y: number }, canvas: Canvas): boolean => {
+  if (position.x < 0 || position.x >= canvas.w || position.y < 0 || position.y >= canvas.h) {
     return false;
   }
 
@@ -70,7 +68,9 @@ export const commandParser: CommandParser = (
     const parsedInstruction = parseInstruction(instruction);
 
     if (parsedInstruction && isPlaceCommand(parsedInstruction)) {
-      return placeCommandIsValid(parsedInstruction, canvas) ? parsedInstruction : null;
+      const { x, y } = parsedInstruction;
+
+      return newPositionIsValid({ x, y }, canvas) ? parsedInstruction : null;
     } else {
       return parsedInstruction;
     }

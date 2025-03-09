@@ -2,25 +2,27 @@
 import Stream from 'node:stream';
 import { commandParser } from './lib/commandParser.js';
 
-export type InstructionTerm = 'PLACE' | 'MOVE' | 'LEFT' | 'RIGHT' | 'REPORT';
+export type TurnInstruction = 'LEFT' | 'RIGHT';
+export type InstructionTerm = 'PLACE' | 'MOVE' | 'REPORT' | TurnInstruction;
 
 export type Direction = 'NORTH' | 'EAST' | 'SOUTH' | 'WEST';
 
-export type RobotState =
-  | {
-      state: 'POSITIONED';
-      x: number;
-      y: number;
-      facing: Direction;
-      canvas: Canvas;
-    }
-  | {
-      state: 'NOT_POSITIONED';
-      x: null;
-      y: null;
-      facing: null;
-      canvas: Canvas;
-    };
+export type Positioned = {
+  status: 'POSITIONED';
+  x: number;
+  y: number;
+  facing: Direction;
+  canvas: Canvas;
+};
+export type NotPositioned = {
+  status: 'NOT_POSITIONED';
+  x: null;
+  y: null;
+  facing: null;
+  canvas: Canvas;
+};
+
+export type RobotState = Positioned | NotPositioned;
 
 export type PlaceInstruction = { type: 'PLACE'; x: number; y: number; facing: Direction };
 export type SimpleInstruction =
@@ -38,6 +40,8 @@ export type Canvas = {
   w: number;
   h: number;
 };
+
+export const MOVE_AMOUNT = 1;
 
 export const handleInput: InputHandler = (
   input: Stream.Readable,
