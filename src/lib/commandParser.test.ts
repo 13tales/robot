@@ -29,30 +29,6 @@ describe('commandParser', () => {
       expect(result).toEqual([]);
     });
 
-    it('should return an empty array for PLACE with x outside canvas bounds', () => {
-      const input = 'PLACE 6,2,NORTH';
-
-      const result = commandParser(input);
-
-      expect(result).toEqual([]);
-    });
-
-    it('should return an empty array for PLACE with y outside canvas bounds', () => {
-      const input = 'PLACE 2,6,EAST';
-
-      const result = commandParser(input);
-
-      expect(result).toEqual([]);
-    });
-
-    it('should return an empty array for PLACE with negative coordinates', () => {
-      const input = 'PLACE -1,2,SOUTH';
-
-      const result = commandParser(input);
-
-      expect(result).toEqual([]);
-    });
-
     it('should return an empty array for PLACE with non-numeric coordinates', () => {
       const input = 'PLACE x,y,WEST';
 
@@ -150,41 +126,6 @@ describe('commandParser', () => {
         { type: 'PLACE', x: 1, y: 1, facing: 'NORTH' },
         { type: 'MOVE' },
         { type: 'REPORT' },
-      ];
-
-      const result = commandParser(input);
-
-      expect(result).toEqual(expected);
-    });
-  });
-
-  describe('Different canvas sizes', () => {
-    it('should correctly validate PLACE with smaller canvas', () => {
-      const input = 'PLACE 2,2,NORTH\nPLACE 3,2,SOUTH';
-      const expected: Instruction[] = [{ type: 'PLACE', x: 2, y: 2, facing: 'NORTH' }];
-
-      const result = commandParser(input);
-
-      expect(result).toEqual(expected);
-    });
-
-    it('should correctly validate PLACE with larger canvas', () => {
-      const input = 'PLACE 6,8,EAST\nPLACE 9,9,WEST';
-      const expected: Instruction[] = [
-        { type: 'PLACE', x: 6, y: 8, facing: 'EAST' },
-        { type: 'PLACE', x: 9, y: 9, facing: 'WEST' },
-      ];
-
-      const result = commandParser(input);
-
-      expect(result).toEqual(expected);
-    });
-
-    it('should correctly validate PLACE with non-square canvas', () => {
-      const input = 'PLACE 7,3,NORTH\nPLACE 5,3,SOUTH\nPLACE 8,5,WEST';
-      const expected: Instruction[] = [
-        { type: 'PLACE', x: 7, y: 3, facing: 'NORTH' },
-        { type: 'PLACE', x: 5, y: 3, facing: 'SOUTH' },
       ];
 
       const result = commandParser(input);

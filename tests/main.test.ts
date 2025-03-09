@@ -29,7 +29,7 @@ class MockWritableStream extends Writable {
 }
 
 describe('Robot Simulator', () => {
-  test('should process commands from test1.txt correctly', () => {
+  test('should process commands from test1.txt correctly', async () => {
     // Get expected output
     const expectedOutput = fs
       .readFileSync(path.join(__dirname, 'expected/test1.txt'), 'utf8')
@@ -41,14 +41,20 @@ describe('Robot Simulator', () => {
     });
     const outputStream = new MockWritableStream();
 
-    // Await the handleInput function to complete
-    handleInput(inputStream, outputStream);
+    try {
+      // Process the input and wait for completion
+      await handleInput(inputStream, outputStream);
 
-    // Check the output after processing is complete
-    expect(outputStream.getWrittenContent()).toBe(expectedOutput);
-  });
+      // Check the output
+      expect(outputStream.getWrittenContent()).toBe(expectedOutput);
+    } finally {
+      // Clean up streams to prevent memory leaks
+      if (!inputStream.destroyed) inputStream.destroy();
+      if (!outputStream.destroyed) outputStream.destroy();
+    }
+  }, 5000);
 
-  test('should process commands from test2.txt correctly', () => {
+  test('should process commands from test2.txt correctly', async () => {
     // Get expected output
     const expectedOutput = fs
       .readFileSync(path.join(__dirname, 'expected/test2.txt'), 'utf8')
@@ -60,14 +66,20 @@ describe('Robot Simulator', () => {
     });
     const outputStream = new MockWritableStream();
 
-    // Await the handleInput function to complete
-    handleInput(inputStream, outputStream);
+    try {
+      // Process the input and wait for completion
+      await handleInput(inputStream, outputStream);
 
-    // Check the output after processing is complete
-    expect(outputStream.getWrittenContent()).toBe(expectedOutput);
-  });
+      // Check the output
+      expect(outputStream.getWrittenContent()).toBe(expectedOutput);
+    } finally {
+      // Clean up streams to prevent memory leaks
+      if (!inputStream.destroyed) inputStream.destroy();
+      if (!outputStream.destroyed) outputStream.destroy();
+    }
+  }, 5000);
 
-  test('should process commands from test3.txt correctly', () => {
+  test('should process commands from test3.txt correctly', async () => {
     // Get expected output
     const expectedOutput = fs
       .readFileSync(path.join(__dirname, 'expected/test3.txt'), 'utf8')
@@ -79,10 +91,15 @@ describe('Robot Simulator', () => {
     });
     const outputStream = new MockWritableStream();
 
-    // Await the handleInput function to complete
-    handleInput(inputStream, outputStream);
+    try {
+      // Process the input and wait for completion
+      await handleInput(inputStream, outputStream);
 
-    // Check the output after processing is complete
-    expect(outputStream.getWrittenContent()).toBe(expectedOutput);
-  });
+      expect(outputStream.getWrittenContent()).toBe(expectedOutput);
+    } finally {
+      // Clean up streams to prevent memory leaks
+      if (!inputStream.destroyed) inputStream.destroy();
+      if (!outputStream.destroyed) outputStream.destroy();
+    }
+  }, 5000);
 });

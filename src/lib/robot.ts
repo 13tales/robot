@@ -18,7 +18,7 @@ enum FACING_VALUE {
 }
 
 /* For clarity. As runtime objects, TS enums have double the entries we might expect,
-  Due to the reverse-mapping.
+    due to the reverse-mapping.
  */
 const FACING_COUNT = 4;
 
@@ -39,7 +39,7 @@ export const getNewFacing = (turn: TurnInstruction, facing: Direction): Directio
   return FACING_VALUE[newFacingValue] as Direction;
 };
 
-const isPositioned = (state: Positioned | NotPositioned): state is Positioned =>
+export const isPositioned = (state: Positioned | NotPositioned): state is Positioned =>
   state.status === 'POSITIONED';
 
 // Check that a place command falls within the canvas
