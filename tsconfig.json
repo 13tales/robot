@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",            // Modern Node.js supports recent ECMAScript features
-    "module": "NodeNext",          // Use the Node.js-specific module resolution
-    "moduleResolution": "NodeNext", // Modern module resolution strategy
+    "module": "CommonJS",          // Use CommonJS module system
+    "moduleResolution": "Node",    // Use Node.js module resolution
     "esModuleInterop": true,       // Enables compatibility with CommonJS modules
     "strict": true,                // Enable all strict type checking options
     "skipLibCheck": true,          // Skip type checking of declaration files

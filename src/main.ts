@@ -3,12 +3,9 @@
 import Stream from 'node:stream';
 import { program } from 'commander';
 import { createReadStream } from 'node:fs';
-import { handleInput } from './lib/inputHandler.js';
-import { RobotState, Instruction } from './lib/types.js';
+import { handleInput } from './lib/inputHandler';
 
 export const MOVE_AMOUNT = 1;
-
-export type RobotReducer = (state: RobotState, action: Instruction) => RobotState;
 
 program
   .name('bot-sim')

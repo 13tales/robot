@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Writable } from 'node:stream';
-import { handleInput } from '../src/lib/inputHandler.js';
+import { handleInput } from '../src/lib/inputHandler';
 
 class MockWritableStream extends Writable {
   chunks: Array<Buffer | string> = [];

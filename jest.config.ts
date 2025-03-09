@@ -1,16 +1,15 @@
 import type { Config } from 'jest';
 
 const config: Config = {
-  preset: 'ts-jest/presets/default-esm',
+  preset: 'ts-jest',
   testEnvironment: 'node',
-  extensionsToTreatAsEsm: ['.ts'],
   roots: ['<rootDir>/src', '<rootDir>/tests'],
   testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
   transform: {
     '^.+\\.ts$': [
       'ts-jest',
       {
-        useESM: true,
+        useESM: false,
         tsconfig: 'tsconfig.json',
       },
     ],
@@ -20,9 +19,6 @@ const config: Config = {
   coverageReporters: ['text', 'lcov'],
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
   verbose: true,
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
-  },
   moduleFileExtensions: ['ts', 'js', 'json'],
   clearMocks: true,
   resetMocks: true,

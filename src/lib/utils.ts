@@ -5,7 +5,7 @@ import {
   Positioned,
   ReportInstruction,
   SimpleInstruction,
-} from './types.js';
+} from './types';
 
 export const isPlaceInstruction = (v: unknown): v is PlaceInstruction => {
   if (typeof v !== 'object') {

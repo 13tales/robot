@@ -1,4 +1,4 @@
-import Stream from 'node:stream';
+import * as Stream from 'node:stream';
 
 export type TurnInstruction = 'LEFT' | 'RIGHT';
 export type InstructionTerm = 'PLACE' | 'MOVE' | 'REPORT' | TurnInstruction;
@@ -12,6 +12,7 @@ export type Positioned = {
   facing: Direction;
   canvas: Canvas;
 };
+
 export type NotPositioned = {
   status: 'NOT_POSITIONED';
   x: null;
@@ -34,3 +35,5 @@ export type Canvas = {
   w: number;
   h: number;
 };
+
+export type RobotReducer = (state: RobotState, action: Instruction) => RobotState;

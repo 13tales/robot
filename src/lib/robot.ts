@@ -1,6 +1,6 @@
-import { MOVE_AMOUNT } from '../main.js';
-import { TurnInstruction, Canvas, RobotState, Instruction, Direction } from './types.js';
-import { isPositioned } from './utils.js';
+import { MOVE_AMOUNT } from '../main';
+import { TurnInstruction, Canvas, RobotState, Instruction, Direction } from './types';
+import { isPositioned } from './utils';
 
 // Using TS enums here for a concise reverse-mapping between strings and integer values
 enum FACING_VALUE {

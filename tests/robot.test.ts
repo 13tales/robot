@@ -1,5 +1,5 @@
-import { robotReducer } from './robot.js';
-import { Canvas, RobotState, Instruction } from './types.js';
+import { robotReducer } from '../src/lib/robot';
+import { Canvas, RobotState, Instruction } from '../src/lib/types';
 
 const defaultCanvas: Canvas = { w: 5, h: 5 };
 

@@ -1,5 +1,5 @@
-import { commandParser, parseInstruction } from './commandParser.js';
-import { Instruction } from './types.js';
+import { commandParser, parseInstruction } from '../src/lib/commandParser';
+import { Instruction } from '../src/lib/types';
 
 describe('commandParser', () => {
   describe('PLACE instruction', () => {

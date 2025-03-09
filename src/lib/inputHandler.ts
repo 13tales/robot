@@ -1,15 +1,14 @@
-import { RobotReducer } from '../main.js';
-import Stream, { Transform } from 'stream';
+import Stream, { Transform } from 'node:stream';
 import { pipeline } from 'stream/promises';
-import { commandParser } from './commandParser.js';
-import { robotReducer } from './robot.js';
-import { InputHandler, RobotState } from './types.js';
+import { commandParser } from './commandParser';
+import { robotReducer } from './robot';
+import { InputHandler, RobotReducer, RobotState } from './types';
 import {
   isPositioned,
   isSimpleInstruction,
   isPlaceInstruction,
   isReportInstruction,
-} from './utils.js';
+} from './utils';
 
 const outputFormatter = (state: RobotState): string | null => {
   if (!isPositioned(state)) {
@@ -37,13 +36,17 @@ export class StateReducerTransform extends Transform {
     try {
       if (isSimpleInstruction(chunk) || isPlaceInstruction(chunk)) {
         const newState = this.reducer(this.state, chunk);
+
         this.state = newState;
+
         callback();
       } else if (isReportInstruction(chunk)) {
         const formattedOutput = outputFormatter(this.state);
+
         if (formattedOutput !== null) {
           this.push(formattedOutput);
         }
+
         callback();
       } else {
         callback();
