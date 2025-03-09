@@ -33,7 +33,7 @@ export type SimpleInstruction =
 
 export type Instruction = PlaceInstruction | SimpleInstruction;
 
-export type CommandParser = (line: string, canvas: Canvas) => Instruction[];
+export type CommandParser = (lines: string) => Instruction[];
 export type InputHandler = (input: Stream.Readable, output: Stream.Writable) => void;
 
 export type Canvas = {
@@ -45,8 +45,7 @@ export const MOVE_AMOUNT = 1;
 
 export const handleInput: InputHandler = (
   input: Stream.Readable,
-  output: Stream.Writable,
-  canvas = { w: 5, h: 5 }
+  output: Stream.Writable
 ): void => {
   const chunks: string[] = [];
 
@@ -63,7 +62,8 @@ export const handleInput: InputHandler = (
 
   input.on('end', () => {
     const inputString = chunks.join('');
-    const instructions = commandParser(inputString, canvas);
+    const instructions = commandParser(inputString);
+
     output.write(instructions);
     output.end();
   });

@@ -6,8 +6,8 @@ import {
   Direction,
   Positioned,
   NotPositioned,
+  Canvas,
 } from '../main.js';
-import { newPositionIsValid } from './commandParser.js';
 
 // Using TS enums here for a concise reverse-mapping between strings and integer values
 enum FACING_VALUE {
@@ -17,7 +17,9 @@ enum FACING_VALUE {
   WEST,
 }
 
-// For clarity; as runtime objects, TS enums have double the entries we might expect 🥴
+/* For clarity. As runtime objects, TS enums have double the entries we might expect,
+  Due to the reverse-mapping.
+ */
 const FACING_COUNT = 4;
 
 enum TURN_VALUE {
@@ -31,7 +33,7 @@ export const getNewFacing = (turn: TurnInstruction, facing: Direction): Directio
   const currentFacingValue = FACING_VALUE[facing];
   const turnValue = TURN_VALUE[turn];
   const rawNewFacing = currentFacingValue + turnValue;
-  // Workaround for the quirks of the JS modulo operator
+  // Workaround for the quirks of the JS modulo/remainder operator
   const newFacingValue = (rawNewFacing + FACING_COUNT) % FACING_COUNT;
 
   return FACING_VALUE[newFacingValue] as Direction;
@@ -39,6 +41,15 @@ export const getNewFacing = (turn: TurnInstruction, facing: Direction): Directio
 
 const isPositioned = (state: Positioned | NotPositioned): state is Positioned =>
   state.status === 'POSITIONED';
+
+// Check that a place command falls within the canvas
+const newPositionIsValid = (position: { x: number; y: number }, canvas: Canvas): boolean => {
+  if (position.x < 0 || position.x >= canvas.w || position.y < 0 || position.y >= canvas.h) {
+    return false;
+  }
+
+  return true;
+};
 
 export const robotReducer = (state: RobotState, instruction: Instruction): RobotState => {
   // Handle "PLACE" separately, to streamline checking for "POSITIONED" status

@@ -1,11 +1,4 @@
-import {
-  Canvas,
-  CommandParser,
-  Direction,
-  Instruction,
-  PlaceInstruction,
-  SimpleInstruction,
-} from 'src/main.js';
+import { CommandParser, Direction, Instruction, SimpleInstruction } from 'src/main.js';
 
 const COMMAND_REGEX =
   /(?<term>MOVE|LEFT|RIGHT|REPORT|PLACE)\s*((?<x>\d),\s*(?<y>\d),\s*(?<facing>NORTH|SOUTH|EAST|WEST)\b)?/i;
@@ -43,37 +36,14 @@ export const parseInstruction = (instruction: string): Instruction | null => {
   }
 };
 
-const isPlaceCommand = (instruction: Instruction): instruction is PlaceInstruction => {
-  return instruction.type === 'PLACE';
-};
-
-// Check that a place command falls within the canvas
-export const newPositionIsValid = (position: { x: number; y: number }, canvas: Canvas): boolean => {
-  if (position.x < 0 || position.x >= canvas.w || position.y < 0 || position.y >= canvas.h) {
-    return false;
-  }
-
-  return true;
-};
-
 // Parse a chunk of text into a list of instructions
-export const commandParser: CommandParser = (
-  line: string,
-  canvas: Canvas,
-  delimiter: string = '\n'
-) => {
+export const commandParser: CommandParser = (line: string, delimiter: string = '\n') => {
   const instructions = line.trim().toUpperCase().split(delimiter);
 
   const parsedInstructions = instructions.map((instruction: string) => {
     const parsedInstruction = parseInstruction(instruction);
 
-    if (parsedInstruction && isPlaceCommand(parsedInstruction)) {
-      const { x, y } = parsedInstruction;
-
-      return newPositionIsValid({ x, y }, canvas) ? parsedInstruction : null;
-    } else {
-      return parsedInstruction;
-    }
+    return parsedInstruction;
   });
 
   return parsedInstructions.filter(
