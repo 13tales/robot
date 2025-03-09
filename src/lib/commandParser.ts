@@ -1,4 +1,4 @@
-import { CommandParser, Direction, Instruction, SimpleInstruction } from 'src/main.js';
+import { Instruction, SimpleInstruction, CommandParser, Direction } from './types.js';
 
 const COMMAND_REGEX =
   /(?<term>MOVE|LEFT|RIGHT|REPORT|PLACE)\s*((?<x>\d),\s*(?<y>\d),\s*(?<facing>NORTH|SOUTH|EAST|WEST)\b)?/i;

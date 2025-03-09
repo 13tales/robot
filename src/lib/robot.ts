@@ -1,13 +1,6 @@
-import {
-  Instruction,
-  MOVE_AMOUNT,
-  RobotState,
-  TurnInstruction,
-  Direction,
-  Positioned,
-  NotPositioned,
-  Canvas,
-} from '../main.js';
+import { MOVE_AMOUNT } from '../main.js';
+import { TurnInstruction, Canvas, RobotState, Instruction, Direction } from './types.js';
+import { isPositioned } from './utils.js';
 
 // Using TS enums here for a concise reverse-mapping between strings and integer values
 enum FACING_VALUE {
@@ -38,9 +31,6 @@ export const getNewFacing = (turn: TurnInstruction, facing: Direction): Directio
 
   return FACING_VALUE[newFacingValue] as Direction;
 };
-
-export const isPositioned = (state: Positioned | NotPositioned): state is Positioned =>
-  state.status === 'POSITIONED';
 
 // Check that a place command falls within the canvas
 const newPositionIsValid = (position: { x: number; y: number }, canvas: Canvas): boolean => {
