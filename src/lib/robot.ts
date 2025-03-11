@@ -1,5 +1,5 @@
 import { MOVE_AMOUNT } from '../main';
-import { TurnInstruction, Canvas, RobotState, Instruction, Direction } from './types';
+import { TurnInstruction, RobotCanvas, RobotState, Instruction, Direction } from './types';
 import { isPositioned } from './utils';
 
 // Using TS enums here for a concise reverse-mapping between strings and integer values
@@ -33,7 +33,7 @@ export const getNewFacing = (turn: TurnInstruction, facing: Direction): Directio
 };
 
 // Check that a place command falls within the canvas
-const newPositionIsValid = (position: { x: number; y: number }, canvas: Canvas): boolean => {
+const newPositionIsValid = (position: { x: number; y: number }, canvas: RobotCanvas): boolean => {
   if (position.x < 0 || position.x >= canvas.w || position.y < 0 || position.y >= canvas.h) {
     return false;
   }

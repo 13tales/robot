@@ -1,16 +1,16 @@
 // @ts-check
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import prettier from 'eslint-config-prettier';
+const eslint = require('@eslint/js');
+const tseslint = require('typescript-eslint');
+const prettier = require('eslint-config-prettier');
 
-export default tseslint.config(
+module.exports = tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   {
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir: __dirname,
       },
     },
   },
@@ -18,5 +18,8 @@ export default tseslint.config(
   {
     files: ['**/*.js'],
     extends: [tseslint.configs.disableTypeChecked],
+  },
+  {
+    ignores: ['dist/**', 'eslint.config.js'],
   }
 );

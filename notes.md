@@ -71,14 +71,18 @@ stateDiagram-v2
         
         FacingNorth --> FacingWest: LEFT
         FacingNorth --> FacingEast: RIGHT
+        FacingNorth --> FacingNorth: MOVE (Y+1)
         
         FacingEast --> FacingNorth: LEFT
         FacingEast --> FacingSouth: RIGHT
+        FacingEast --> FacingEast: MOVE (X+1)
         
         FacingSouth --> FacingEast: LEFT
         FacingSouth --> FacingWest: RIGHT
+        FacingSouth --> FacingSouth: MOVE (Y-1)
         
         FacingWest --> FacingSouth: LEFT
         FacingWest --> FacingNorth: RIGHT
+        FacingWest --> FacingWest: MOVE (X-1)
     }
 ```

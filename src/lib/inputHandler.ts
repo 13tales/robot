@@ -15,7 +15,7 @@ const outputFormatter = (state: RobotState): string | null => {
     return null;
   } else {
     const { x, y, facing } = state;
-    return `${x},${y},${facing}`;
+    return `${x},${y},${facing}\n`;
   }
 };
 

@@ -1,7 +1,7 @@
 import { robotReducer } from '../src/lib/robot';
-import { Canvas, RobotState, Instruction } from '../src/lib/types';
+import { RobotCanvas, RobotState, Instruction } from '../src/lib/types';
 
-const defaultCanvas: Canvas = { w: 5, h: 5 };
+const defaultCanvas: RobotCanvas = { w: 5, h: 5 };
 
 describe('robotReducer', () => {
   describe('PLACE instruction', () => {
