@@ -1,7 +1,7 @@
 import Stream, { Transform } from 'node:stream';
 import { pipeline } from 'stream/promises';
 import { commandParser } from './commandParser';
-import { robotReducer } from './robot';
+import { robotReducer } from './stateReducer';
 import { InputHandler, RobotReducer, RobotState } from './types';
 import {
   isPositioned,
