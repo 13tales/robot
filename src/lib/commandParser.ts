@@ -1,7 +1,7 @@
 import { Instruction, SimpleInstruction, CommandParser, Direction } from './types';
 
 const COMMAND_REGEX =
-  /(?<term>MOVE|LEFT|RIGHT|REPORT|PLACE)\s*((?<x>\d),\s*(?<y>\d),\s*(?<facing>NORTH|SOUTH|EAST|WEST)\b)?/i;
+  /(?<term>\b(?:MOVE|LEFT|RIGHT|REPORT|PLACE)\b)\s*((?<x>\d),\s*(?<y>\d),\s*(?<facing>NORTH|SOUTH|EAST|WEST)\b)?/i;
 
 export const parseInstruction = (instruction: string): Instruction | null => {
   const result = COMMAND_REGEX.exec(instruction);

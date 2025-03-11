@@ -133,6 +133,59 @@ describe('commandParser', () => {
       expect(result).toEqual(expected);
     });
   });
+
+  describe('Malformed commands containing valid command terms', () => {
+    it('should ignore commands with valid command terms at the start but invalid format', () => {
+      const input = 'PLACE 1,1,NORTH\nMOVEforward\nLEFT\nREPORT';
+      const expected: Instruction[] = [
+        { type: 'PLACE', x: 1, y: 1, facing: 'NORTH' },
+        { type: 'LEFT' },
+        { type: 'REPORT' },
+      ];
+
+      const result = commandParser(input);
+
+      expect(result).toEqual(expected);
+    });
+
+    it('should ignore commands with valid command terms at the end but invalid format', () => {
+      const input = 'PLACE 1,1,NORTH\nturnLEFT\nRIGHT\nREPORT';
+      const expected: Instruction[] = [
+        { type: 'PLACE', x: 1, y: 1, facing: 'NORTH' },
+        { type: 'RIGHT' },
+        { type: 'REPORT' },
+      ];
+
+      const result = commandParser(input);
+
+      expect(result).toEqual(expected);
+    });
+
+    it('should ignore commands with valid command terms in the middle but invalid format', () => {
+      const input = 'PLACE 1,1,NORTH\nroboMOVEnow\nLEFT\nandthenREPORTquickly';
+      const expected: Instruction[] = [
+        { type: 'PLACE', x: 1, y: 1, facing: 'NORTH' },
+        { type: 'LEFT' },
+      ];
+
+      const result = commandParser(input);
+
+      expect(result).toEqual(expected);
+    });
+
+    it('should ignore all malformed commands in a mixed input scenario', () => {
+      const input = 'PLACE1,1,NORTH\nPLACE 2,2,EAST\nMOVEnow\nLEFT\ndonotRIGHT\nREPORT';
+      const expected: Instruction[] = [
+        { type: 'PLACE', x: 2, y: 2, facing: 'EAST' },
+        { type: 'LEFT' },
+        { type: 'REPORT' },
+      ];
+
+      const result = commandParser(input);
+
+      expect(result).toEqual(expected);
+    });
+  });
 });
 
 describe('parseInstruction', () => {
@@ -179,6 +232,32 @@ describe('parseInstruction', () => {
       expect(parseInstruction('  LEFT  ')).toEqual({ type: 'LEFT' });
       expect(parseInstruction('  RIGHT  ')).toEqual({ type: 'RIGHT' });
       expect(parseInstruction('  REPORT  ')).toEqual({ type: 'REPORT' });
+    });
+  });
+
+  describe('Invalid commands containing valid command terms', () => {
+    it('should return null for commands with valid command at the start followed by invalid text', () => {
+      expect(parseInstruction('MOVE123')).toBeNull();
+      expect(parseInstruction('LEFT_TURN')).toBeNull();
+      expect(parseInstruction('RIGHTangle')).toBeNull();
+      expect(parseInstruction('REPORTnow')).toBeNull();
+      expect(parseInstruction('PLACE2,2,NORTH')).toBeNull(); // Missing space after PLACE
+    });
+
+    it('should return null for commands with valid command at the end preceded by invalid text', () => {
+      expect(parseInstruction('do_MOVE')).toBeNull();
+      expect(parseInstruction('turn_LEFT')).toBeNull();
+      expect(parseInstruction('go_RIGHT')).toBeNull();
+      expect(parseInstruction('please_REPORT')).toBeNull();
+      expect(parseInstruction('robot_PLACE 1,1,NORTH')).toBeNull();
+    });
+
+    it('should return null for commands with valid command in the middle surrounded by invalid text', () => {
+      expect(parseInstruction('robotMOVEnow')).toBeNull();
+      expect(parseInstruction('turnLEFTnow')).toBeNull();
+      expect(parseInstruction('goRIGHTfast')).toBeNull();
+      expect(parseInstruction('doREPORTimmediately')).toBeNull();
+      expect(parseInstruction('robotPLACE 1,1,NORTHnow')).toBeNull();
     });
   });
 
