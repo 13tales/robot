@@ -33,9 +33,9 @@ export type PlaceInstruction = { type: 'PLACE'; x: number; y: number; facing: Di
 
 export type ReportInstruction = { type: 'REPORT' };
 
-export type SimpleInstruction = { type: 'MOVE' } | { type: 'LEFT' } | { type: 'RIGHT' };
+export type MoveInstruction = { type: 'MOVE' } | { type: 'LEFT' } | { type: 'RIGHT' };
 
-export type Instruction = PlaceInstruction | SimpleInstruction | ReportInstruction;
+export type Instruction = PlaceInstruction | MoveInstruction | ReportInstruction;
 
 export type CommandParser = (lines: string) => Instruction[];
 

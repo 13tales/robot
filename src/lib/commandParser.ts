@@ -1,4 +1,4 @@
-import { Instruction, SimpleInstruction, CommandParser, Direction } from './types';
+import { Instruction, MoveInstruction, CommandParser, Direction } from './types';
 
 const COMMAND_REGEX =
   /(?<term>\b(?:MOVE|LEFT|RIGHT|REPORT|PLACE)\b)\s*((?<x>\d),\s*(?<y>\d),\s*(?<facing>NORTH|SOUTH|EAST|WEST)\b)?/i;
@@ -32,7 +32,7 @@ export const parseInstruction = (instruction: string): Instruction | null => {
     // things somewhat.
     return { type: 'PLACE', x: xInt, y: yInt, facing: facing as Direction };
   } else {
-    return { type: term } as SimpleInstruction;
+    return { type: term } as MoveInstruction;
   }
 };
 

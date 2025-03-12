@@ -1,6 +1,6 @@
 import {
   PlaceInstruction,
-  SimpleInstruction,
+  MoveInstruction,
   ReportInstruction,
   Instruction,
   Positioned,
@@ -22,12 +22,12 @@ export const isPlaceInstruction = (v: unknown): v is PlaceInstruction => {
   );
 };
 
-export const isSimpleInstruction = (v: unknown): v is SimpleInstruction => {
+export const isMoveInstruction = (v: unknown): v is MoveInstruction => {
   if (typeof v !== 'object') {
     return false;
   }
 
-  const asSimple = v as SimpleInstruction;
+  const asSimple = v as MoveInstruction;
   return asSimple.type === 'MOVE' || asSimple.type === 'LEFT' || asSimple.type === 'RIGHT';
 };
 
@@ -41,7 +41,7 @@ export const isReportInstruction = (v: unknown): v is ReportInstruction => {
 };
 
 export const isInstruction = (v: unknown): v is Instruction =>
-  isSimpleInstruction(v) || isPlaceInstruction(v) || isReportInstruction(v);
+  isMoveInstruction(v) || isPlaceInstruction(v) || isReportInstruction(v);
 
 export const isPositioned = (state: Positioned | NotPositioned): state is Positioned =>
   state.status === 'POSITIONED';

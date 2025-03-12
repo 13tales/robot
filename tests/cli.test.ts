@@ -9,7 +9,7 @@ import { jest } from '@jest/globals';
 jest.mock('../src/core/robotEngine');
 
 // Import after mocking
-import { handleInput } from '../src/core/robotEngine';
+import { robotEngine } from '../src/core/robotEngine';
 import { main } from '../src/cli';
 
 class MockWritableStream extends Writable {
@@ -82,7 +82,7 @@ describe('CLI Integration Tests', () => {
     console.error = jest.fn();
     // We need to use type assertion here
     Object.defineProperty(process, 'exit', { value: mockExit });
-    (handleInput as jest.Mock).mockImplementation(mockHandleInput);
+    (robotEngine as jest.Mock).mockImplementation(mockHandleInput);
   });
 
   afterEach(() => {
@@ -116,9 +116,9 @@ describe('CLI Integration Tests', () => {
     await main();
 
     // Verify handleInput was called with appropriate arguments
-    expect(handleInput).toHaveBeenCalled();
+    expect(robotEngine).toHaveBeenCalled();
     // Test that handleInput was called with our mocks
-    const handleInputCalls = (handleInput as jest.Mock).mock.calls;
+    const handleInputCalls = (robotEngine as jest.Mock).mock.calls;
     expect(handleInputCalls.length).toBeGreaterThan(0);
     expect(handleInputCalls[0][0]).toBe(mockStdin);
     expect(handleInputCalls[0][1]).toBe(mockStdout);
@@ -148,11 +148,11 @@ describe('CLI Integration Tests', () => {
     await main();
 
     // Verify handleInput was called with the file stream
-    expect(handleInput).toHaveBeenCalled();
+    expect(robotEngine).toHaveBeenCalled();
     expect(fs.createReadStream).toHaveBeenCalledWith(testFilePath);
 
     // Get the first argument passed to handleInput
-    const handleInputCalls = (handleInput as jest.Mock).mock.calls;
+    const handleInputCalls = (robotEngine as jest.Mock).mock.calls;
     expect(handleInputCalls.length).toBeGreaterThan(0);
 
     // Check that the first argument to handleInput is our mockFileStream
@@ -199,7 +199,7 @@ describe('CLI Integration Tests', () => {
     jest.spyOn(fs, 'createReadStream').mockImplementation(() => mockStdin as any);
 
     // Mock handleInput to throw an error
-    (handleInput as jest.Mock).mockImplementation(() => {
+    (robotEngine as jest.Mock).mockImplementation(() => {
       throw new Error('Test error');
     });
 

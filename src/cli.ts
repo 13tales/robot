@@ -3,7 +3,7 @@
 import Stream from 'node:stream';
 import { program } from 'commander';
 import { createReadStream } from 'node:fs';
-import { handleInput } from './core/robotEngine';
+import { robotEngine } from './core/robotEngine';
 
 export const MOVE_AMOUNT = 1;
 
@@ -33,7 +33,7 @@ export const main = async () => {
       }
 
       try {
-        await handleInput(input, process.stdout);
+        await robotEngine(input, process.stdout);
       } catch (err) {
         console.error(`Error: ${err instanceof Error ? err : 'Unknown error.'}`);
       }

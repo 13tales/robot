@@ -1,7 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import { Writable } from 'node:stream';
-import { handleInput } from '../src/core/robotEngine';
+import { Writable, Readable } from 'node:stream';
+import { robotEngine } from '../src/core/robotEngine';
+import {
+  moveInCircle,
+  moveBackAndForthInCardinalDirections,
+  stayInCenterMultipleReports,
+} from './generateTestData';
 
 class MockWritableStream extends Writable {
   chunks: Array<Buffer | string> = [];
@@ -43,7 +48,7 @@ describe('Robot Simulator', () => {
 
     try {
       // Process the input and wait for completion
-      await handleInput(inputStream, outputStream);
+      await robotEngine(inputStream, outputStream);
 
       // Check the output
       expect(outputStream.getWrittenContent()).toBe(expectedOutput);
@@ -68,7 +73,7 @@ describe('Robot Simulator', () => {
 
     try {
       // Process the input and wait for completion
-      await handleInput(inputStream, outputStream);
+      await robotEngine(inputStream, outputStream);
 
       // Check the output
       expect(outputStream.getWrittenContent()).toBe(expectedOutput);
@@ -93,7 +98,7 @@ describe('Robot Simulator', () => {
 
     try {
       // Process the input and wait for completion
-      await handleInput(inputStream, outputStream);
+      await robotEngine(inputStream, outputStream);
 
       expect(outputStream.getWrittenContent()).toBe(expectedOutput);
     } finally {
@@ -102,4 +107,44 @@ describe('Robot Simulator', () => {
       if (!outputStream.destroyed) outputStream.destroy();
     }
   }, 5000);
+
+  test('should process a large sequence of commands correctly', async () => {
+    // Instead of using the complex generator function, we'll create our own test data
+    // by repeating the known-good individual test cases
+    const testCases = [
+      moveInCircle,
+      moveBackAndForthInCardinalDirections,
+      stayInCenterMultipleReports,
+    ];
+
+    // Combine all test cases into one long sequence
+    const allInputs: string[] = [];
+    const allExpectedOutputs: string[] = [];
+
+    // Repeat the test cases to create about 1MB of test data
+    for (let i = 0; i < 800; i++) {
+      const testCase = testCases[i % testCases.length];
+      allInputs.push(...testCase.inputs);
+      allExpectedOutputs.push(...testCase.expectedOutput);
+    }
+
+    const inputContent = allInputs.join('\n');
+    const inputStream = Readable.from([inputContent]);
+    const outputStream = new MockWritableStream();
+
+    try {
+      // Process the input
+      await robotEngine(inputStream, outputStream);
+
+      // Get actual output and expected output
+      const actualOutput = outputStream.getWrittenContent();
+      const expectedOutput = allExpectedOutputs.join('\n');
+
+      expect(actualOutput).toBe(expectedOutput);
+    } finally {
+      // Clean up
+      if (!inputStream.destroyed) inputStream.destroy();
+      if (!outputStream.destroyed) outputStream.destroy();
+    }
+  }, 10000); // Longer timeout for large file
 });
