@@ -5,9 +5,9 @@
   "main": "dist/bot-sim.js",
   "bin": "dist/bot-sim.js",
   "scripts": {
-    "dev": "tsx src/cli.ts",
+    "dev": "tsx src/bin/cli.ts",
     "check": "tsc --noEmit",
-    "build": "npm run check && npm run clean && esbuild src/cli.ts --bundle --platform=node --format=cjs --outfile=dist/bot-sim.js",
+    "build": "npm run check && npm run clean && esbuild src/bin/cli.ts --bundle --platform=node --format=cjs --outfile=dist/bot-sim.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",

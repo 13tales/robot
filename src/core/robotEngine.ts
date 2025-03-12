@@ -1,23 +1,10 @@
 import Stream, { Transform } from 'node:stream';
 import { pipeline } from 'stream/promises';
-import { commandParser } from './commandParser';
-import { robotReducer } from './stateReducer';
-import { InputHandler, RobotReducer, RobotState } from './types';
-import {
-  isPositioned,
-  isSimpleInstruction,
-  isPlaceInstruction,
-  isReportInstruction,
-} from './utils';
-
-const outputFormatter = (state: RobotState): string | null => {
-  if (!isPositioned(state)) {
-    return null;
-  } else {
-    const { x, y, facing } = state;
-    return `${x},${y},${facing}\n`;
-  }
-};
+import { commandParser } from '../lib/commandParser';
+import { robotReducer } from '../lib/stateReducer';
+import { InputHandler, RobotReducer, RobotState } from '../lib/types';
+import { outputFormatter } from '../lib/outputFormatter';
+import { isSimpleInstruction, isPlaceInstruction, isReportInstruction } from '../lib/utils/utils';
 
 export class StateReducerTransform extends Transform {
   private state: RobotState;

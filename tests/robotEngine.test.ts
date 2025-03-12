@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Writable } from 'node:stream';
-import { handleInput } from '../src/lib/inputHandler';
+import { handleInput } from '../src/core/robotEngine';
 
 class MockWritableStream extends Writable {
   chunks: Array<Buffer | string> = [];

@@ -1,6 +1,6 @@
-import { MOVE_AMOUNT } from '../main';
+import { MOVE_AMOUNT } from '../cli';
 import { TurnInstruction, RobotCanvas, RobotState, Instruction, Direction } from './types';
-import { isPositioned } from './utils';
+import { isPositioned } from './utils/utils';
 
 // Using TS enums here for a concise reverse-mapping between strings and integer values
 enum FACING_VALUE {
