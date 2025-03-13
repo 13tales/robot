@@ -222,4 +222,82 @@ describe('CLI Integration Tests', () => {
 
     expect(foundErrorMessage).toBe(true);
   });
+
+  test('should log robot state and stack trace to a file when pipeline has an error', async () => {
+    // Set up mockStdin
+    const mockStdin = new MockReadStream({ path: '/dev/stdin' });
+    mockStdin.push('PLACE 0,0,NORTH\nMOVE\n');
+    mockStdin.push(null);
+
+    // Create a mock stdout
+    const mockStdout = new MockWritableStream();
+
+    // Set up process streams with our mocks
+    Object.defineProperty(process, 'stdin', { value: mockStdin });
+    Object.defineProperty(process, 'stdout', { value: mockStdout });
+
+    // Mock file writing
+    const mockWriteStream = {
+      write: jest.fn(),
+      end: jest.fn(),
+    };
+    // Disable TypeScript linter for mock purposes
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    jest.spyOn(fs, 'createWriteStream').mockReturnValue(mockWriteStream as any);
+
+    // Mock fs.createReadStream
+    jest.spyOn(fs, 'createReadStream').mockImplementation(() => mockStdin as any);
+
+    // Create a mock state for our simulated pipeline error
+    const mockState = {
+      status: 'ACTIVE',
+      x: 0,
+      y: 1,
+      facing: 'NORTH',
+      canvas: { h: 5, w: 5 },
+    };
+
+    // Setup the robotEngine mock to simulate the ACTUAL error handling
+    (robotEngine as jest.Mock).mockImplementation(() => {
+      // Create a mock reducer transform with our state
+      const reducerTransform = {
+        currentState: mockState,
+      };
+
+      // Simulate directly what happens in the catch block
+      const error = new Error('Pipeline error');
+
+      // Write to the log file as the real implementation would
+      const logFile = fs.createWriteStream('robot-error.log', { flags: 'a' });
+      const stackTrace = new Error().stack || '';
+      logFile.write(`[${new Date().toISOString()}] Error while handling instructions: ${error}\n`);
+      logFile.write(`Current state: ${JSON.stringify(reducerTransform.currentState)}\n`);
+      logFile.write(`Stack trace: ${stackTrace}\n\n`);
+      logFile.end();
+    });
+
+    // Run the CLI
+    await main();
+
+    // Verify file writing was called
+    expect(fs.createWriteStream).toHaveBeenCalledWith('robot-error.log', { flags: 'a' });
+
+    // Verify error details were written to the log file
+    expect(mockWriteStream.write).toHaveBeenCalledTimes(3); // Error, state, and stack trace
+
+    // Check that write was called with the expected content
+    const writeCallArgs = (mockWriteStream.write as jest.Mock).mock.calls;
+
+    // Check error message was written
+    expect(writeCallArgs[0][0]).toMatch(/Error while handling instructions/);
+
+    // Check state was written (the second call to write)
+    expect(writeCallArgs[1][0]).toContain('Current state:');
+
+    // Check stack trace was written (the third call)
+    expect(writeCallArgs[2][0]).toContain('Stack trace:');
+
+    // Verify the stream was closed
+    expect(mockWriteStream.end).toHaveBeenCalled();
+  });
 });

@@ -5,6 +5,7 @@ import { robotReducer } from '../lib/stateReducer';
 import { InputHandler, RobotReducer, RobotState } from '../lib/types';
 import { outputFormatter } from '../lib/outputFormatter';
 import { isMoveInstruction, isPlaceInstruction, isReportInstruction } from '../lib/utils/utils';
+import fs from 'node:fs';
 
 export class StateReducerTransform extends Transform {
   private state: RobotState;
@@ -18,6 +19,10 @@ export class StateReducerTransform extends Transform {
 
     this.reducer = reducer;
     this.state = { ...initialState };
+  }
+
+  public get currentState(): RobotState {
+    return this.state;
   }
 
   _transform(chunk: unknown, _encoding: BufferEncoding, callback: Stream.TransformCallback): void {
@@ -98,8 +103,12 @@ class CommandParseTransform extends Transform {
               return;
             }
           }
-        } catch {
-          // Just ignore invalid commands and continue processing
+        } catch (err) {
+          if (err instanceof Error) {
+            callback(err);
+          } else {
+            callback();
+          }
         }
       }
     }
@@ -115,8 +124,12 @@ class CommandParseTransform extends Transform {
         for (const cmd of commands) {
           this.push(cmd);
         }
-      } catch {
-        // Ignore invalid commands
+      } catch (err) {
+        if (err instanceof Error) {
+          callback(err);
+        } else {
+          callback();
+        }
       }
     }
     callback();
@@ -140,7 +153,17 @@ export const robotEngine: InputHandler = async (
   try {
     await pipeline(input, commandParseTransform, reducerTransform, output);
   } catch (err) {
-    console.error('Pipeline failed', err);
-    throw err;
+    // Write error and state to log file
+    const logFile = fs.createWriteStream('robot-error.log', { flags: 'a' });
+
+    // Capture stack trace
+    const stackTrace = new Error().stack || '';
+
+    // Write error details to log file
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    logFile.write(`[${new Date().toISOString()}] Error while handling instructions: ${err}\n`);
+    logFile.write(`Current state: ${JSON.stringify(reducerTransform.currentState)}\n`);
+    logFile.write(`Stack trace: ${stackTrace}\n\n`);
+    logFile.end();
   }
 };
