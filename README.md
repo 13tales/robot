@@ -2,8 +2,6 @@
 
 **Author:** Tom Armstrong (hello@tomarmstrong.dev)
 
-A solution for the Seek Pass "robot" candidate exercise.
-
 ## Installation and usage
 - `npm install` to install dependencies.
 - `npm run build` will bundle the application as a single file in the `/dist` folder.
